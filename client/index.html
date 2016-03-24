@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html ng-app='aged_app'>
+<head>
+	<title>1955 api</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+	<script>
+	var aged_app = angular.module('aged_app', []);
+
+	aged_app.factory('AgedFactory', function($http){
+		var factory = {};
+		var friends = [];
+
+		factory.index = function(callback) {
+			$http.get('/oldpeople').success(function(output){
+				console.log(output);
+				aged = output;
+				callback(aged);
+			})
+		}
+
+		factory.create = function(name, callback) {
+			$http.get('/new/' + name).success(function(output){
+				aged = output;
+				callback(aged);
+			})
+		}
+
+		factory.delete = function(name, callback){
+			$http.get('/remove/' + name).success(function(output){
+				aged = output;
+				callback(aged);
+			})
+		}
+
+		factory.show = function(name, callback){
+			$http.get('/' + name).success(function(output){
+				aged = output;
+				callback(aged);
+			})
+		}
+		return factory;
+	})
+
+	// aged controller
+	aged_app.controller('AgedController', function($scope, AgedFactory){
+		AgedFactory.index(function(data){
+			
+			$scope.aged = data;
+		})
+
+		$scope.addAged = function(){
+			AgedFactory.create($scope.newOld, function(){
+				$scope.aged = AgedFactory.index(function(data){
+					$scope.aged = data;
+				})
+			})
+		}
+
+		$scope.meatGrinder = function(name){
+			console.log("Meat");
+			AgedFactory.delete(name, function(){
+				$scope.aged = AgedFactory.index(function(data){
+					$scope.aged = data;
+				})
+			})
+		}
+	})
+	</script>
+</head>
+<body ng-controller='AgedController'>
+<h1>1955</h1>
+<p>New Old Person</p><input type='text' ng-model='newOld'>
+<button ng-click='addAged()'>Add old peeps</button>
+<ul>
+	<li ng-repeat="dude in aged">
+		{{dude.name}} | <button ng-click='meatGrinder(dude.name)'>Old people meat</button>
+	</li>
+</ul>
+
+</body>
+</html>

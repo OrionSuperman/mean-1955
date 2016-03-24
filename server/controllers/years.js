@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 var Year = mongoose.model('Year');
 module.exports = {
   index: function(req, res){
-    Year.find({}, function(err, variable){
-      res.json({info: variable});
+    Year.find({}, function(err, results){
+      res.json(results);
     })
   },
   create: function(req, res){

@@ -1,3 +1,4 @@
+console.log('server.js')
 // requiring express and path
 var express = require("express");
 var path = require("path");
@@ -7,14 +8,10 @@ var app = express();
 
 // require bodyParser since we need to handle post DATABSE
 var bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 
 // static content
-app.use(express.static(path.join(__dirname, './client/static')));
-
-// setting up ejs and our views folder
-app.set('views', path.join(__dirname, './client/views'));
-app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, './client')));
 
 // require the mongoose config file which does the rest for us
 require('./server/config/mongoose.js');
